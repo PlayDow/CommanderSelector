@@ -1,0 +1,10 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\CommanderSelector",
+    "\\CommanderSelector\\backend",
+    "\\CommanderSelector\\frontend"
+  ],
+  "SelectedNode": "\\CommanderSelector\\frontend\\dockerfile.yml",
+  "PreviewInSolutionExplorer": false
+}

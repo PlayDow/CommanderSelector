@@ -1,0 +1,18 @@
+# Étape de build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /app
+
+# Copie et restaure les dépendances
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copie le reste et compile
+COPY . ./
+RUN dotnet publish -c Release -o out
+
+# Étape finale : exécution
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /app/out .
+ENTRYPOINT ["dotnet", "TonProjet.dll"] 
+# ⚠️ Remplace "TonProjet.dll" par le nom de ton .csproj
