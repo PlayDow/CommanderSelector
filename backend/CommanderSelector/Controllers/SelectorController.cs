@@ -1,6 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
 using CommanderSelector.Models;
 using CommanderSelector.Models.IServices;
+using CommanderSelector.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CommanderSelector.Controllers;
 
@@ -10,9 +11,13 @@ namespace CommanderSelector.Controllers;
 /// <param name="commanderService">The service that provides commander-related operations. This parameter must not be null.</param>
 [ApiController]
 [Route("api/[controller]")]
-public class CommanderController(ICommanderService commanderService) : ControllerBase
+public class CommanderController(
+    ICommanderService commanderService,
+    IPlayService playService
+    ) : ControllerBase
 {
     private readonly ICommanderService _commanderService = commanderService;
+    private readonly IPlayService _playService = playService;
     private const int TemporaryUserId = 1; // TO DO
 
     /// <summary>
@@ -57,7 +62,7 @@ public class CommanderController(ICommanderService commanderService) : Controlle
     [HttpPost]
     public IActionResult AddCommander([FromBody] Commander newCommander)
     {
-        newCommander.UserId = TemporaryUserId; // On force l'ID de l'utilisateur
+        newCommander.UserId = TemporaryUserId;  // TO DO
         _commanderService.AddCommander(newCommander);
         return CreatedAtAction(nameof(GetUserCommanders), new { bracket = newCommander.Bracket }, newCommander);
     }
@@ -74,7 +79,7 @@ public class CommanderController(ICommanderService commanderService) : Controlle
     [HttpPut]
     public IActionResult UpdateCommander([FromBody] Commander commander)
     {
-        commander.UserId = TemporaryUserId;
+        commander.UserId = TemporaryUserId;  // TO DO
         _commanderService.UpdateCommander(commander);
         return NoContent();
     }
@@ -92,5 +97,21 @@ public class CommanderController(ICommanderService commanderService) : Controlle
     {
         _commanderService.DeleteCommander(id, TemporaryUserId);
         return NoContent();
+    }
+
+    /// <summary>
+    /// Records a play instance submitted by the client and associates it with a temporary user identifier.
+    /// </summary>
+    /// <remarks>This method assigns a temporary user ID to the play before recording it. Use this endpoint
+    /// for scenarios where user authentication is not yet implemented or when testing play submissions.</remarks>
+    /// <param name="play">The play object containing the details of the play to record. Must be properly populated before submission.</param>
+    /// <returns>An IActionResult that indicates the result of the operation. Returns a success message if the play is recorded
+    /// successfully.</returns>
+    [HttpPost("record-play")]
+    public IActionResult RecordPlay([FromBody] Play play)
+    {
+        play.UserId = 1; // TO DO
+        _playService.RecordPlay(play);
+        return Ok(new { Message = "Partie enregistrée" });
     }
 }

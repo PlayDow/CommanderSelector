@@ -1,5 +1,7 @@
 using CommanderSelector.Models.IRepositories;
+using CommanderSelector.Models.IServices;
 using CommanderSelector.Repositories;
+using CommanderSelector.Services;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,11 +9,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Ajoute les services pour les contrôleurs
 builder.Services.AddControllers();
 
-// Service
-
-
-// Repository
+// --- Enregistrement des Repositories ---
 builder.Services.AddScoped<ICommanderRepository, CommanderRepository>();
+builder.Services.AddScoped<IPlayRepository, PlayRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+// --- Enregistrement des Services ---
+builder.Services.AddScoped<ICommanderService, CommanderService>();
+builder.Services.AddScoped<IPlayService, PlayService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddHttpClient<IApiService, ApiService>();
 
 // Le nouveau moteur OpenAPI de Microsoft
 builder.Services.AddOpenApi();
