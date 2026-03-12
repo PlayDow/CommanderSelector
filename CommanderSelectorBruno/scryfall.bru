@@ -1,0 +1,20 @@
+meta {
+  name: scryfall
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://api.scryfall.com/cards/named?fuzzy=Gavi, Nest Warden
+  body: none
+  auth: none
+}
+
+params:query {
+  fuzzy: Gavi, Nest Warden
+}
+
+headers {
+  User-Agent: MonAppSelecteurCommandant/1.0
+  Accept: application/json
+}

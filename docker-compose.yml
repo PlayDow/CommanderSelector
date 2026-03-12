@@ -33,6 +33,7 @@ services:
       - db
     environment:
       - ConnectionStrings__DefaultConnection=Host=db;Database=mtg_manager;Username=user;Password=password
+      - ASPNETCORE_ENVIRONMENT=Development
 
   # Frontend React
   frontend:
