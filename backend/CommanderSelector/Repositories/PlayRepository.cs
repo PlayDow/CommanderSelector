@@ -1,4 +1,5 @@
-﻿using CommanderSelector.Models;
+using CommanderSelector.Models;
+using CommanderSelector.Models.Dto;
 using CommanderSelector.Models.IRepositories;
 using Dapper;
 
@@ -6,18 +7,29 @@ namespace CommanderSelector.Repositories;
 
 public class PlayRepository(IConfiguration configuration) : BaseRepository(configuration), IPlayRepository
 {
-    /// <summary>
-    /// Inserts a new play record into the database using the specified play information.
-    /// </summary>
-    /// <remarks>The play is recorded with the current timestamp as the play date. The method does not return
-    /// a value and does not indicate whether the insertion was successful.</remarks>
-    /// <param name="newPlay">The play object containing the commander and user identifiers for the new play entry. Cannot be null.</param>
     public void InsertPlay(Play newPlay)
     {
         var sql = @"
         INSERT INTO ""Plays"" (""CommanderId"", ""UserId"", ""PlayedAt"")
         VALUES (@CommanderId, @UserId, CURRENT_TIMESTAMP)";
-
         Db.Execute(sql, newPlay);
+    }
+
+    public IEnumerable<PlayHistoryDto> GetHistory(int userId)
+    {
+        var sql = @"
+        SELECT 
+            p.""Id""           AS Id,
+            p.""CommanderId""  AS CommanderId,
+            c.""Name""         AS CommanderName,
+            c.""ImageUrl""     AS ImageUrl,
+            c.""Bracket""      AS Bracket,
+            p.""PlayedAt""     AS PlayedAt
+        FROM ""Plays"" p
+        JOIN ""Commanders"" c ON c.""ID"" = p.""CommanderId""
+        WHERE p.""UserId"" = @userId
+        ORDER BY p.""PlayedAt"" DESC";
+
+        return Db.Query<PlayHistoryDto>(sql, new { userId });
     }
 }

@@ -1,12 +1,13 @@
 ﻿using CommanderSelector.Models;
+using CommanderSelector.Models.IRepositories;
 using CommanderSelector.Models.IServices;
 using CommanderSelector.Repositories;
 
 namespace CommanderSelector.Services;
 
-public class CommanderService(CommanderRepository commanderRepository) : ICommanderService
+public class CommanderService(ICommanderRepository commanderRepository) : ICommanderService
 {
-    private readonly CommanderRepository _commanderRepository = commanderRepository;
+    private readonly ICommanderRepository _commanderRepository = commanderRepository;
 
     /// <summary>
     /// Adds a new commander to the repository.
