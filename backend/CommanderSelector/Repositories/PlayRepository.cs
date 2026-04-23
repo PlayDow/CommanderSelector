@@ -19,7 +19,7 @@ public class PlayRepository(IConfiguration configuration) : BaseRepository(confi
     {
         var sql = @"
         SELECT 
-            p.""Id""           AS Id,
+            p.""ID""           AS Id,
             p.""CommanderId""  AS CommanderId,
             c.""Name""         AS CommanderName,
             c.""ImageUrl""     AS ImageUrl,
