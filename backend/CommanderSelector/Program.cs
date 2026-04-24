@@ -23,7 +23,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy
-            .WithOrigins("https://commander-selector.pages.dev")
+            .WithOrigins(
+                "https://commander-selector.pages.dev", 
+                "https://cmdr-selector.yolle.net"
+            )
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
