@@ -1,0 +1,19 @@
+# Build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /app
+
+# Copie des fichiers de configuration et restauration
+COPY *.slnx .
+COPY CommanderSelector/*.csproj ./CommanderSelector/
+RUN dotnet restore
+
+# Compilation
+COPY . .
+WORKDIR "/app/CommanderSelector"
+RUN dotnet publish -c Release -o /app/publish
+
+# Image d'exécution
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
+WORKDIR /app
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "CommanderSelector.dll"]
