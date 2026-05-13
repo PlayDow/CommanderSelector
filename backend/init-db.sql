@@ -1,0 +1,28 @@
+CREATE TABLE IF NOT EXISTS "Users" (
+    "ID" SERIAL PRIMARY KEY,
+    "UserName" VARCHAR(255) NOT NULL UNIQUE,
+    "Password" VARCHAR(255) NOT NULL,
+    "RecoveryCodeHash" VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "Commanders" (
+    "ID" SERIAL PRIMARY KEY,
+    "UserId" INTEGER NOT NULL REFERENCES "Users"("ID") ON DELETE CASCADE,
+    "Name" VARCHAR(255) NOT NULL,
+    "ScryfallId" UUID NOT NULL,
+    "ImageUrl" TEXT NOT NULL,
+    "Bracket" INTEGER NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_commanders_user_bracket
+    ON "Commanders" ("UserId", "Bracket");
+
+CREATE TABLE IF NOT EXISTS "Plays" (
+    "ID" SERIAL PRIMARY KEY,
+    "CommanderId" INTEGER NOT NULL REFERENCES "Commanders"("ID") ON DELETE CASCADE,
+    "UserId" INTEGER NOT NULL REFERENCES "Users"("ID") ON DELETE CASCADE,
+    "PlayedAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_plays_user_playedat
+    ON "Plays" ("UserId", "PlayedAt" DESC);

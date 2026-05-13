@@ -17,7 +17,7 @@ const History = () => {
     const [rawError, setRawError] = useState('');
 
     useEffect(() => {
-        fetch('http://localhost:5000/api/Commander/history', {
+        fetch('/api/Commander/history', {
             headers: {
                 'X-User-Id': String(localStorage.getItem('mtg_userId') ?? '0'),
             }

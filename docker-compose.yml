@@ -10,6 +10,9 @@ services:
       POSTGRES_DB: mtg_manager
     ports:
       - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
 
   # Interface graphique pour la BDD (accessible sur localhost:5050)
   pgadmin:
@@ -45,3 +48,6 @@ services:
       - "3000:80"
     depends_on:
       - backend
+
+volumes:
+  pgdata:

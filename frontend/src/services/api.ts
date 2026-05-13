@@ -1,7 +1,7 @@
 import type { Commander, Play } from "../types";
 
-const API_URL = "http://localhost:5000/api/Commander";
-const AUTH_URL = "http://localhost:5000/api/User";
+const API_URL = "/api/Commander";
+const AUTH_URL = "/api/User";
 const SCRYFALL_API = "https://api.scryfall.com/cards/search";
 
 // Récupère le userId stocké après login
