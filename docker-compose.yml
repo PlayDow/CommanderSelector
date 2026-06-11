@@ -29,7 +29,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: mtg_api
+    container_name: mtg_ap
     ports:
       - "5000:8080"
     depends_on:
