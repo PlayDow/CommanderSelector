@@ -1,4 +1,3 @@
-using CommanderSelector.Models;
 using CommanderSelector.Models.IServices;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,47 +5,40 @@ namespace CommanderSelector.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController(IUserService userService) : ControllerBase
+public class UserController(IUserService userService, ICommunityService communityService) : ControllerBase
 {
-    private readonly IUserService _userService = userService;
+    private int GetUserId() =>
+        Request.Headers.TryGetValue("X-User-Id", out var v) && int.TryParse(v, out var id) ? id : 0;
 
-    /// <summary>Inscription : pseudo + mot de passe. Retourne le code de récupération à noter.</summary>
     [HttpPost("register")]
-    public IActionResult Register([FromBody] LoginRequest request)
+    public IActionResult Register([FromBody] LoginRequest req)
     {
-        if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
+        if (string.IsNullOrWhiteSpace(req.Username) || string.IsNullOrWhiteSpace(req.Password))
             return BadRequest(new { Message = "Pseudo et mot de passe requis." });
-
         try
         {
-            var recoveryCode = _userService.Register(request.Username, request.Password);
-            return Ok(new { Message = "Compte créé !", RecoveryCode = recoveryCode });
+            var code = userService.Register(req.Username, req.Password);
+            return Ok(new { Message = "Compte créé !", RecoveryCode = code });
         }
-        catch (InvalidOperationException ex)
-        {
-            return Conflict(new { Message = ex.Message });
-        }
+        catch (InvalidOperationException ex) { return Conflict(new { Message = ex.Message }); }
     }
 
-    /// <summary>Connexion. Retourne l'userId si succès.</summary>
     [HttpPost("login")]
-    public IActionResult Login([FromBody] LoginRequest request)
+    public IActionResult Login([FromBody] LoginRequest req)
     {
-        var user = _userService.Login(request.Username, request.Password);
-        if (user == null)
-            return Unauthorized(new { Message = "Pseudo ou mot de passe incorrect." });
+        var user = userService.Login(req.Username, req.Password);
+        if (user == null) return Unauthorized(new { Message = "Pseudo ou mot de passe incorrect." });
 
-        return Ok(new { UserId = user.Id, Username = user.UserName });
+        // Récupère les tags pour le frontend
+        var tags = communityService.GetUserTags(user.Id).Select(t => new { t.Id, t.Name });
+        return Ok(new { UserId = user.Id, Username = user.UserName, IsAdmin = user.IsAdmin, Tags = tags });
     }
 
-    /// <summary>Réinitialisation via code de récupération. Retourne un nouveau code à noter.</summary>
     [HttpPost("recover")]
-    public IActionResult Recover([FromBody] RecoverRequest request)
+    public IActionResult Recover([FromBody] RecoverRequest req)
     {
-        var newCode = _userService.ResetWithCode(request.Username, request.RecoveryCode, request.NewPassword);
-        if (newCode == null)
-            return BadRequest(new { Message = "Pseudo ou code de récupération incorrect." });
-
+        var newCode = userService.ResetWithCode(req.Username, req.RecoveryCode, req.NewPassword);
+        if (newCode == null) return BadRequest(new { Message = "Pseudo ou code incorrect." });
         return Ok(new { Message = "Mot de passe réinitialisé.", NewRecoveryCode = newCode });
     }
 }

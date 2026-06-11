@@ -1,23 +1,26 @@
-﻿namespace CommanderSelector.Models;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CommanderSelector.Models;
 
 public class Play
 {
-    /// <summary>
-    /// Gets or sets the unique identifier for the entity.
-    /// </summary>
+    [Column("ID")]
     public int Id { get; set; }
-    /// <summary>
-    /// Gets or sets the unique identifier for the commander associated with this entity.
-    /// </summary>
+
+    [Column("CommanderId")]
     public int CommanderId { get; set; }
-    /// <summary>
-    /// Gets or sets the unique identifier for the user.
-    /// </summary>
+
+    [Column("UserId")]
     public int UserId { get; set; }
-    /// <summary>
-    /// Gets or sets the date and time when the event was played, represented in Coordinated Universal Time (UTC).
-    /// </summary>
-    /// <remarks>This property is initialized to the current UTC date and time when a new instance is
-    /// created.</remarks>
+
+    [Column("PlayedAt")]
     public DateTime PlayedAt { get; set; } = DateTime.UtcNow;
+
+    /// <summary>"win" | "loss" | null</summary>
+    [Column("Result")]
+    public string? Result { get; set; }
+
+    /// <summary>Annulé sans suppression — remet le deck dans la roulette</summary>
+    [Column("IsVoided")]
+    public bool IsVoided { get; set; } = false;
 }

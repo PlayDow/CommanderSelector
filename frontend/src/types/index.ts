@@ -4,7 +4,8 @@ export interface Commander {
     name: string;
     scryfallId: string;
     imageUrl: string;
-    bracket: number;
+    bracket: string;
+    isActive?: boolean;
 }
 
 export interface Play {
@@ -12,4 +13,18 @@ export interface Play {
     commanderId: number;
     userId: number;
     playedAt?: string;
+    result?: string;
+    isVoided?: boolean;
+}
+
+export interface Tag {
+    id: number;
+    name: string;
+}
+
+export interface UserSummary {
+    id: number;
+    userName: string;
+    isAdmin: boolean;
+    tags: Tag[];
 }

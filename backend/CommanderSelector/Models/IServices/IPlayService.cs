@@ -1,10 +1,12 @@
 using CommanderSelector.Models;
-using CommanderSelector.Models.Dto;
 
 namespace CommanderSelector.Models.IServices;
 
 public interface IPlayService
 {
     void RecordPlay(Play play);
-    IEnumerable<PlayHistoryDto> GetHistory(int userId);
+    void UpdateResult(int playId, int userId, string result);
+    void VoidPlay(int playId, int userId);
+    IEnumerable<PlayDetail> GetHistory(int userId);
+    IEnumerable<CommanderStats> GetStats(int userId);
 }
